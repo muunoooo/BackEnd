@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 // fs adalah file system, untuk membaca value dari json
 import fs from "fs";
 import { IUser } from "../types/user";
-import { json } from "stream/consumers";
 
 export class UserController {
   getUsers(req: Request, res: Response) {
