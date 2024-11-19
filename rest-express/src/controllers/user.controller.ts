@@ -5,9 +5,17 @@ import { IUser } from "../types/user";
 
 export class UserController {
   getUsers(req: Request, res: Response) {
-    const users: IUser[] = JSON.parse(
+    const { name } = req.query;
+    let users: IUser[] = JSON.parse(
       fs.readFileSync("./db/users.json", "utf-8")
     );
+
+    if (name) {
+      users = users.filter((item) =>
+        item.name.toLowerCase().includes(name as string)
+      );
+    }
+
     res.status(200).send({ users });
   }
   getUserId(req: Request, res: Response) {
@@ -16,11 +24,8 @@ export class UserController {
     );
     const { id } = req.params;
     const data = users.find((item) => item.id == +id); // parseInt (id) atau Number (id) atau +
-    if (data) {
-      res.status(200).send({ user: data });
-    } else {
-      res.status(404).send({ message: "User not Found" });
-    }
+
+    res.status(200).send({ user: data });
   }
 
   AddUser(req: Request, res: Response) {
@@ -32,8 +37,35 @@ export class UserController {
     const newData: IUser = { id, name, email, password };
     users.push(newData);
 
-    fs.writeFileSync("./db/users.json", JSON.stringify(users) , "utf-8")
+    fs.writeFileSync("./db/users.json", JSON.stringify(users), "utf-8");
 
-    res.status(200).send({ user: newData });
+    res.status(201).send({ user: newData });
+  }
+
+  EditUser(req: Request, res: Response) {
+    const { id } = req.params;
+    const users: IUser[] = JSON.parse(
+      fs.readFileSync("./db/users.json", "utf-8")
+    );
+
+    const idx: number = users.findIndex((item) => item.id == +id);
+    users[idx] = { ...users[idx], ...req.body };
+
+    fs.writeFileSync("./db/users.json", JSON.stringify(users), "utf-8");
+
+    res.status(200).send("Edit succesfully!");
+  }
+
+  DeleteUser(req: Request, res: Response) {
+    const { id } = req.params;
+    const users: IUser[] = JSON.parse(
+      fs.readFileSync("./db/users.json", "utf-8")
+    );
+
+    const newUsers = users.filter((item) => item.id != +id);
+
+    fs.writeFileSync("./db/users.json", JSON.stringify(newUsers), "utf-8");
+
+    res.status(200).send("Delete succesfully!");
   }
 }
