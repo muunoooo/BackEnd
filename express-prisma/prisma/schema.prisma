@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum BlogCategory {
+  Sport
+  Health
+  Food
+  Tech
+}
+
+model User {
+  user_id   Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String // jika seperti ini not null
+  avatar    String? // jika menggunakan "?" artinya boleh null
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  Blog      Blog[]
+}
+
+model Blog {
+  blog_id   String       @id @default(uuid())
+  title     String       @unique
+  slug      String       @unique
+  category  BlogCategory
+  content   Json
+  thumbnail String
+  createdAt DateTime     @default(now())
+  updateAt  DateTime     @updatedAt
+  user_id   Int
+  user      User         @relation(fields: [user_id], references: [user_id])
+}
