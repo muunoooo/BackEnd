@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 
 export class UserController {
   async getUsers(req: Request, res: Response) {
+    console.log(req.user);
     try {
       const { search, page = 1, limit = 5 } = req.query;
 
@@ -36,8 +37,9 @@ export class UserController {
 
   async getUserId(req: Request, res: Response) {
     try {
-      const { id } = req.params;
-      const user = await prisma.user.findUnique({ where: { user_id: +id } });
+      const user = await prisma.user.findUnique({
+        where: { user_id: req.user?.id },
+      });
       res.status(200).send({ user });
     } catch (err) {
       console.log(err);
