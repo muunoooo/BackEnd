@@ -5,6 +5,7 @@ import { BlogRouter } from "./routers/blog.router";
 import { AuthRouter } from "./routers/auth.router";
 import coockieParser from "cookie-parser";
 import path from "path";
+import { PostRouter } from "./routers/post.router";
 
 const PORT: number = 8000;
 
@@ -27,10 +28,12 @@ app.use("/api/public", express.static(path.join(__dirname, "../public")));
 const userRouter = new UserRotuer();
 const blogRouter = new BlogRouter();
 const authRouter = new AuthRouter();
+// const postRouter = new PostRouter();
 
 app.use("/api/users", userRouter.getRouter());
 app.use("/api/blogs", blogRouter.getRouter());
 app.use("/api/auth", authRouter.getRouter());
+// app.use("/api/posts", postRouter.getRouter());
 
 app.listen(PORT, () => {
   console.log(`service running on -> http://localhost:${PORT}/api`);

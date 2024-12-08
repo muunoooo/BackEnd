@@ -20,6 +20,12 @@ enum RoleUser {
   Admin
 }
 
+enum StatusOrder {
+  Pending
+  Canceled
+  Paid
+}
+
 model User {
   user_id      Int      @id @default(autoincrement())
   username     String   @unique
@@ -33,6 +39,7 @@ model User {
   createdAt    DateTime @default(now())
   updateAt     DateTime @updatedAt
   Blog         Blog[]
+  Order        Order[]
 }
 
 model Blog {
@@ -46,4 +53,15 @@ model Blog {
   updateAt  DateTime     @updatedAt
   user_id   Int
   user      User         @relation(fields: [user_id], references: [user_id])
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  price        Int
+  status       StatusOrder @default(Pending)
+  redirect_url String?
+  createdAt    DateTime    @default(now())
+  expiredAt    DateTime
+  user_id      Int
+  user         User        @relation(fields: [user_id], references: [user_id])
 }
